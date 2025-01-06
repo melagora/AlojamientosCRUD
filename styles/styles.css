@@ -1,0 +1,140 @@
+.register-body {
+  background: url("../assets/images/playaBackground2.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+.login-body {
+  background: url("../assets/images/playaBackground.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+body {
+  color: #fff;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  filter: blur(8px);
+  z-index: -1;
+}
+
+.register-container,
+.login-container {
+  background: #fff;
+  color: #000;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  overflow: hidden;
+}
+.register-image {
+  background: url("../assets/images/playaBackground2.jpg") no-repeat center center;
+}
+.login-image {
+  background: url("../assets/images/playaBackground2.jpg") no-repeat center center;
+}
+
+.register-image,
+.login-image {
+  background-size: cover;
+  width: 50%;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn {
+  background-color: #00417d;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+.btn:hover {
+  background-color: rgb(89, 178, 255);
+}
+
+.register-form,
+.login-form {
+  width: 50%;
+  padding: 40px;
+}
+.register-form h1,
+.login-form h1 {
+  margin-bottom: 20px;
+}
+.social-buttons button {
+  margin: 5px 0;
+}
+
+.welcome-login {
+  font-size: 30px;
+}
+
+.welcome-register {
+  font-size: 40px;
+}
+
+.negrita {
+  font-weight: bold;
+}
+
+.floating-home-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #00417d;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.floating-home-button:hover {
+  background-color: rgb(89, 178, 255);
+}
+
+.floating-home-button:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip {
+  visibility: hidden;
+  opacity: 0;
+  width: 120px;
+  background-color: #00417d;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 10px;
+  right: 215%;
+  margin-right: -60px;
+  transition: opacity 0.3s;
+}

@@ -1,6 +1,6 @@
 <?php
 // Incluir la configuración de conexión a la base de datos
-// require_once 'config.php';
+// require_once '../config.php';
 
 // Verificar si la conexión es válida
 // if (!$conn) {

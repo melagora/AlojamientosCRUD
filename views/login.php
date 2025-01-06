@@ -1,6 +1,6 @@
 <?php
 // Incluir la configuración de conexión a la base de datos
-// require_once 'config.php';
+// require_once '../config.php';
 
 // Verificar si el formulario ha sido enviado
 // if ($_SERVER["REQUEST_METHOD"] === "POST") {

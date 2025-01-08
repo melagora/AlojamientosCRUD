@@ -37,11 +37,6 @@ $alojamientos = $alojamientoController->mostrarAlojamientos();
 
 <?php include '../includes/header.php'; ?>
 
-<!-- Botón para abrir el modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
-    Iniciar Sesión
-</button>
-
 <!-- Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog">

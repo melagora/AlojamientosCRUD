@@ -1,70 +1,52 @@
 <?php
-// Incluir la configuración de conexión a la base de datos
-// require_once '../config.php';
+// Incluir el archivo de configuración de la base de datos
+require_once '../config.php';
 
-// Verificar si el formulario ha sido enviado
-// if ($_SERVER["REQUEST_METHOD"] === "POST") {
-//     // Obtener los datos del formulario
-//     $correo = isset($_POST['email']) ? trim($_POST['email']) : '';
-//     $contrasena = isset($_POST['password']) ? trim($_POST['password']) : '';
+// Comprobar si el formulario fue enviado
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Obtener los datos del formulario
+    $correo = htmlspecialchars($_POST['email']);
+    $contrasena = $_POST['password'];
 
-//     // Validar que los campos no estén vacíos
-//     if (!empty($correo) && !empty($contrasena)) {
-//         // Validar formato del correo
-//         if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-//             echo "El correo no tiene un formato válido.";
-//             exit();
-//         }
+    // Conectar a la base de datos
+    $database = new Database();
+    $db = $database->getConnection();
 
-//         // Preparar la consulta para obtener el usuario por correo
-//         $sql = "SELECT id, nombre, correo, contrasena FROM usuarios WHERE correo = ?";
+    try {
+        // Consulta para verificar si el usuario existe
+        $query = "SELECT id, contraseña, estado FROM usuario WHERE correo = :correo";
+        echo "Consulta ejecutada: " . $query . "\n"; // Agregar un mensaje de depuración
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':correo', $correo);
+        $stmt->execute();
 
-//         if ($stmt = $conn->prepare($sql)) {
-//             // Vincular parámetros
-//             $stmt->bind_param("s", $correo);
+        // Verificar si se encontró un usuario con el correo proporcionado
+        if ($stmt->rowCount() > 0) {
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-//             // Ejecutar la consulta
-//             $stmt->execute();
+            // Verificar la contraseña
+            if (password_verify($contrasena, $user['contraseña'])) {
+                // Actualizar el estado a "activo"
+                $updateQuery = "UPDATE usuario SET estado = 'activo' WHERE id = :id";
+                $updateStmt = $db->prepare($updateQuery);
+                $updateStmt->bindParam(':id', $user['id']);
+                $updateStmt->execute();
 
-//             // Obtener el resultado
-//             $resultado = $stmt->get_result();
-
-//             // Verificar si se encontró el usuario
-//             if ($resultado->num_rows === 1) {
-//                 // Obtener los datos del usuario
-//                 $usuario = $resultado->fetch_assoc();
-
-//                 // Verificar la contraseña
-//                 if (password_verify($contrasena, $usuario['contrasena'])) {
-//                     // Iniciar sesión y redirigir al usuario
-//                     session_start();
-//                     $_SESSION['id'] = $usuario['id'];
-//                     $_SESSION['nombre'] = $usuario['nombre'];
-//                     $_SESSION['correo'] = $usuario['correo'];
-
-//                     // Redirigir a una página de inicio (dashboard)
-//                     header("Location: dashboard.php");
-//                     exit();
-//                 } else {
-//                     echo "Contraseña incorrecta.";
-//                 }
-//             } else {
-//                 echo "No se encontró una cuenta asociada a este correo.";
-//             }
-
-//             // Cerrar el statement
-//             $stmt->close();
-//         } else {
-//             echo "Error al preparar la consulta: " . $conn->error;
-//         }
-//     } else {
-//         echo "Por favor, complete todos los campos.";
-//     }
-
-//     // Cerrar la conexión
-//     $conn->close();
-// }
+                // Redirigir al usuario a la página deseada
+                header("Location: dashboard.php"); // Cambia "dashboard.php" por la página que desees
+                exit;
+            } else {
+                echo "Contraseña incorrecta.";
+            }
+        } else {
+            echo "Correo no encontrado.";
+        }
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -122,16 +104,17 @@
             </form>
         </div>
         <div class="login-image">
-            <p class="welcome-login negrita"><mark>¡Bienvenido de nuevo!</mark><p>
+            <p class="welcome-login negrita"><mark>¡Bienvenido de nuevo!</mark>
+            <p>
             <p class="negrita"><mark>Hola explorador de playas.</mark></p>
             <p class="negrita"><mark>¡Inicia sesión y revisa favoritos para tus próximas vacaciones!</mark></p>
             <div class="social-buttons">
-            <a href="registro.php" class="btn fw-bold">¿Aún no te has registrado?</a>
+                <a href="registro.php" class="btn fw-bold">¿Aún no te has registrado?</a>
                 <!-- <button class="btn btn-info w-100">Twitter</button> -->
             </div>
         </div>
     </div>
-    <div class="floating-home-button" onclick="window.location.href='#Enlcace a la página de inicio'">
+    <div class="floating-home-button" onclick="window.location.href='index.php'">
         <i class="bi bi-house-door-fill"></i>
         <span class="tooltip">Volver al inicio</span>
     </div>

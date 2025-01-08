@@ -1,65 +1,52 @@
 <?php
-// Incluir la configuración de conexión a la base de datos
-// require_once '../config.php';
+// Incluir el archivo de configuración de la base de datos
+require_once '../config.php';
 
-// Verificar si la conexión es válida
-// if (!$conn) {
-//     die("Error de conexión a la base de datos.");
-// }
+// Comprobar si el formulario fue enviado
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Obtener los datos del formulario
+    $nombre = htmlspecialchars($_POST['username']);
+    $correo = htmlspecialchars($_POST['email']);
+    $contrasena = password_hash($_POST['password'], PASSWORD_DEFAULT); // Encriptar la contraseña
+    $tipo_usuario = "usuario"; // Por defecto
+    $telefono = ""; // Vacío por defecto
+    $estado = "activo"; // Por defecto
+    $fecha_registro = date('Y-m-d H:i:s'); // Fecha y hora actuales
 
-// Verificar si el formulario ha sido enviado
-// if ($_SERVER["REQUEST_METHOD"] === "POST") {
-//     // Obtener los datos del formulario
-//     $nombre = isset($_POST['username']) ? trim($_POST['username']) : '';
-//     $correo = isset($_POST['email']) ? trim($_POST['email']) : '';
-//     $contrasena = isset($_POST['password']) ? trim($_POST['password']) : '';
+    // Conectar a la base de datos
+    $database = new Database();
+    $db = $database->getConnection();
 
-//     // Validar que los campos no estén vacíos
-//     if (!empty($nombre) && !empty($correo) && !empty($contrasena)) {
-//         // Validar formato del correo
-//         if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-//             echo "El correo no tiene un formato válido.";
-//             exit();
-//         }
+    try {
+        // Preparar la consulta SQL
+        $query = "INSERT INTO usuario (nombre, correo, contraseña, tipo_usuario, telefono, fecha_registro, estado)
+                  VALUES (:nombre, :correo, :contraseña, :tipo_usuario, :telefono, :fecha_registro, :estado)";
 
-//         // Hash de la contraseña para mayor seguridad
-//         $contrasenaHash = password_hash($contrasena, PASSWORD_BCRYPT);
+        $stmt = $db->prepare($query);
 
-//         // Tipo predeterminado de usuario
-//         $tipo = 'usuario';
+        // Asignar valores a los parámetros
+        $stmt->bindParam(':nombre', $nombre);
+        $stmt->bindParam(':correo', $correo);
+        $stmt->bindParam(':contraseña', $contrasena);
+        $stmt->bindParam(':tipo_usuario', $tipo_usuario);
+        $stmt->bindParam(':telefono', $telefono);
+        $stmt->bindParam(':fecha_registro', $fecha_registro);
+        $stmt->bindParam(':estado', $estado);
 
-//         // Preparar la consulta SQL para insertar los datos
-//         $sql = "INSERT INTO usuarios (nombre, correo, contrasena, tipo) VALUES (?, ?, ?, ?)";
-
-//         // Preparar la consulta utilizando prepared statements para prevenir inyecciones SQL
-//         if ($stmt = $conn->prepare($sql)) {
-//             // Vincular los parámetros
-//             $stmt->bind_param("ssss", $nombre, $correo, $contrasenaHash, $tipo);
-
-//             // Ejecutar la consulta
-//             if ($stmt->execute()) {
-//                 // Redirigir al usuario con un mensaje de éxito
-//                 header("Location: registro_exitoso.php");
-//                 exit();
-//             } else {
-//                 error_log("Error al ejecutar la consulta: " . $stmt->error);
-//                 echo "Error al guardar los datos.";
-//             }
-
-//             // Cerrar el statement
-//             $stmt->close();
-//         } else {
-//             error_log("Error al preparar la consulta: " . $conn->error);
-//             echo "No se pudo procesar tu solicitud.";
-//         }
-//     } else {
-//         echo "Por favor, complete todos los campos.";
-//     }
-
-//     // Cerrar la conexión
-//     $conn->close();
-// }
+        // Ejecutar la consulta
+        if ($stmt->execute()) {
+            echo "Registro exitoso. Redirigiendo...";
+            header("Refresh: 3; URL=login.php"); // Redirigir al login después de 3 segundos
+            exit;
+        } else {
+            echo "Error al guardar los datos.";
+        }
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -130,7 +117,7 @@
             </form>
         </div>
     </div>
-    <div class="floating-home-button" onclick="window.location.href='#Enlcace a la página de inicio'">
+    <div class="floating-home-button" onclick="window.location.href='index.php'">
         <i class="bi bi-house-door-fill"></i>
         <span class="tooltip">Volver al inicio</span>
     </div>

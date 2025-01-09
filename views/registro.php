@@ -22,7 +22,7 @@
         </div>
         <div class="register-form">
             <h1>Registro de datos</h1>
-            <form action="procesar_registro.php" method="POST">
+            <form id="registerForm" action="procesar_registro.php" method="POST">
                 <div class="mb-2">
                     <label for="nombre" class="form-label">Nombre Completo:</label>
                     <input type="text" class="form-control" id="nombre" name="nombre" required>

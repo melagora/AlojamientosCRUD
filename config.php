@@ -1,26 +1,13 @@
-<?php 
+<?php
+$host = 'localhost'; // Cambiar por tu host
+$dbname = 'alojamientosDB'; // Cambiar por tu base de datos
+$username = 'root'; // Cambiar por tu usuario de base de datos
+$password = '1234'; // Cambiar por tu contraseña
 
-//configutacion y conexion de la BD
-
-
-class Database {
-    private $host = "localhost";
-    private $db_name = "alojamientosDB";
-    private $username = "root";
-    private $password = "";
-    public $conn;
-
-    public function getConnection() {
-        $this->conn = null;
-
-        try {
-            $this->conn = new PDO("mysql:host={$this->host};dbname={$this->db_name}", $this->username, $this->password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $exception) {
-            echo "Error de conexión: " . $exception->getMessage();
-        }
-
-        return $this->conn; // Retorna la conexión PDO
-    }
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Error de conexión: " . $e->getMessage());
 }
 ?>
